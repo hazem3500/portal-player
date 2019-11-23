@@ -4,6 +4,7 @@ import styled, { createGlobalStyle } from "styled-components";
 import { normalize } from "polished";
 import Player from "./Player";
 import { ipcRenderer } from "electron";
+import usePlayer from "../hooks/usePlayer";
 
 const GlobalStyle = createGlobalStyle`
   ${normalize()}
@@ -26,45 +27,12 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const URLForm = styled.form`
-  height: 30px;
-  display: flex;
-
-  input {
-    flex: 1;
-    padding: 5px;
-  }
-
-  button {
-    border: none;
-    background: blueviolet;
-    color: white;
-    outline: none;
-  }
-`;
-
 function App() {
-  const [src, setSrc] = useState(null);
-  useEffect(() => {
-    ipcRenderer.on("file-opened", (event, file) => {
-      setSrc(file);
-    });
-  }, []);
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    setSrc(e.target.url.value);
-  }
-
   return (
     <>
       <GlobalStyle />
       <Container>
-        <Player src={src} />
-        <URLForm onSubmit={handleSubmit}>
-          <input name="url" type="text" />
-          <button type="submit">Play</button>
-        </URLForm>
+        <Player />
       </Container>
     </>
   );
