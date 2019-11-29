@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useRef, useEffect } from "react";
 
 function reducer(state, action) {
   switch (action.type) {
@@ -22,6 +22,12 @@ function reducer(state, action) {
       return { ...state, muted: !state.muted };
     case "SET_PLAYBACK_RATE":
       return { ...state, playbackRate: action.payload };
+    case "SEEK_MOUSE_DOWN":
+      return { ...state, seeking: true };
+    case "SEEK_CHANGE":
+      return { ...state, played: parseFloat(action.payload) };
+    case "SEEK_MOUSE_UP":
+      return { ...state, seeking: false, played: parseFloat(action.payload) };
 
     default:
       throw new Error("invalid action");
@@ -35,14 +41,22 @@ const defaultState = {
   volume: 1,
   muted: false,
   playbackRate: 1,
+  seeking: false,
+  played: 0,
 };
+
 const usePlayer = (initialState = {}) => {
+  const playerRef = useRef();
   const [state, dispatch] = useReducer(reducer, {
     ...defaultState,
     ...initialState,
   });
 
-  return [state, dispatch];
+  useEffect(() => {
+    if (playerRef.current) playerRef.current.seekTo(state.played);
+  }, [state.played]);
+
+  return { playerRef, state, dispatch };
 };
 
 export default usePlayer;

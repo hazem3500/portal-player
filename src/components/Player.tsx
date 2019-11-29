@@ -30,30 +30,49 @@ const URLForm = styled.form`
 `;
 
 export default function Player() {
-  const [playerState, playerDispatch] = usePlayer();
+  const { playerRef, state, dispatch } = usePlayer();
 
   useEffect(() => {
     ipcRenderer.on("file-opened", (event, file) => {
-      playerDispatch({ type: "SET_URL", payload: file });
+      dispatch({ type: "SET_URL", payload: file });
     });
-  }, [playerDispatch]);
+  }, [dispatch]);
 
   function handleSubmit(e) {
     e.preventDefault();
-    playerDispatch({ type: "SET_URL", payload: e.target.url.value });
+    dispatch({ type: "SET_URL", payload: e.target.url.value });
   }
 
   return (
     <div>
       <Container>
-        <ReactPlayer {...playerState} height="80%" width="80%"></ReactPlayer>
+        <ReactPlayer
+          {...state}
+          ref={playerRef}
+          height="80%"
+          width="80%"
+        ></ReactPlayer>
       </Container>
       <div>
-        <button onClick={() => playerDispatch({ type: "PLAY" })}>Play</button>
-        <button onClick={() => playerDispatch({ type: "PAUSE" })}>Pause</button>
-        <button onClick={() => playerDispatch({ type: "TOGGLE_LOOP" })}>
-          Loop
-        </button>
+        <div>
+          <input
+            type="range"
+            min={0}
+            max={1}
+            step="any"
+            value={state.played}
+            onMouseDown={() => dispatch({ type: "SEEK_MOUSE_DOWN" })}
+            onChange={e =>
+              dispatch({ type: "SEEK_CHANGE", payload: e.target.value })
+            }
+            onMouseUp={e =>
+              dispatch({ type: "SEEK_MOUSE_UP", payload: e.target.value })
+            }
+          />
+        </div>
+        <button onClick={() => dispatch({ type: "PLAY" })}>Play</button>
+        <button onClick={() => dispatch({ type: "PAUSE" })}>Pause</button>
+        <button onClick={() => dispatch({ type: "TOGGLE_LOOP" })}>Loop</button>
         <div>
           volume:
           <input
@@ -62,9 +81,9 @@ export default function Player() {
             min={0}
             max={100}
             step={1}
-            value={playerState.volume * 100}
+            value={state.volume * 100}
             onChange={e =>
-              playerDispatch({
+              dispatch({
                 type: "SET_VOLUME",
                 payload: parseInt(e.target.value) / 100,
               })
@@ -76,25 +95,23 @@ export default function Player() {
           <input
             type="range"
             name="speed"
-            value={playerState.playbackRate * 100}
+            value={state.playbackRate * 100}
             min={25}
             max={400}
             step={25}
             onChange={e =>
-              playerDispatch({
+              dispatch({
                 type: "SET_PLAYBACK_RATE",
                 payload: parseInt(e.target.value) / 100,
               })
             }
           />
         </div>
-        <button onClick={() => playerDispatch({ type: "MUTE" })}>Mute</button>
-        <button onClick={() => playerDispatch({ type: "UNMUTE" })}>
-          Unmute
-        </button>
+        <button onClick={() => dispatch({ type: "MUTE" })}>Mute</button>
+        <button onClick={() => dispatch({ type: "UNMUTE" })}>Unmute</button>
       </div>
       <pre>
-        <code>{JSON.stringify(playerState, null, 4)}</code>
+        <code>{JSON.stringify(state, null, 4)}</code>
       </pre>
       <URLForm onSubmit={handleSubmit}>
         <input name="url" type="text" />

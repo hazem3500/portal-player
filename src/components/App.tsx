@@ -3,6 +3,7 @@ import { hot } from "react-hot-loader/root";
 import styled, { createGlobalStyle } from "styled-components";
 import { normalize } from "polished";
 import Player from "./Player";
+import { HashRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { ipcRenderer } from "electron";
 import usePlayer from "../hooks/usePlayer";
 
@@ -29,12 +30,21 @@ const Container = styled.div`
 
 function App() {
   return (
-    <>
+    <Router>
       <GlobalStyle />
       <Container>
-        <Player />
+        <Link to="/history">history</Link>
+        <Link to="/favorites">favorites</Link>
+        <Link to="/">Player</Link>
+        <Switch>
+          <Route path="/history">history</Route>
+          <Route path="/favorites">favorites</Route>
+          <Route path="/">
+            <Player />
+          </Route>
+        </Switch>
       </Container>
-    </>
+    </Router>
   );
 }
 
