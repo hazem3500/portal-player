@@ -9,7 +9,7 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 60vh;
+  min-height: 60vh;
 `;
 
 const URLForm = styled.form`

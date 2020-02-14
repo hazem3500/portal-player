@@ -1,16 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { hot } from "react-hot-loader/root";
 import styled, { createGlobalStyle } from "styled-components";
-import { normalize } from "polished";
 import Player from "./Player";
 import { HashRouter as Router, Switch, Route, Link } from "react-router-dom";
-import { ipcRenderer } from "electron";
-import usePlayer from "../hooks/usePlayer";
+import theme from "../theme";
+import { ThemeProvider, Box, Grid, Flex, Stack, Icon } from "@chakra-ui/core";
+import reset from "styled-reset";
+import { MdPlayArrow } from "react-icons/md";
+import SideMenu from "./SideMenu";
 
 const GlobalStyle = createGlobalStyle`
-  ${normalize()}
+  ${reset}
   body {
     margin: 0;
+  }
+
+  a {
+    &, :visited {
+      color: inherit;
+      text-decoration: none;
+    }
   }
 
   *,
@@ -20,31 +29,25 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const Container = styled.div`
-  height: 100vh;
-  display: flex;
-  align-items: stretch;
-  justify-content: stretch;
-  flex-direction: column;
-`;
-
 function App() {
   return (
-    <Router>
-      <GlobalStyle />
-      <Container>
-        <Link to="/history">history</Link>
-        <Link to="/favorites">favorites</Link>
-        <Link to="/">Player</Link>
-        <Switch>
-          <Route path="/history">history</Route>
-          <Route path="/favorites">favorites</Route>
-          <Route path="/">
-            <Player />
-          </Route>
-        </Switch>
-      </Container>
-    </Router>
+    <ThemeProvider theme={theme}>
+      <Router>
+        <GlobalStyle />
+        <Grid height="100vh" templateColumns="80px 1fr">
+          <SideMenu />
+          <Box overflow="auto">
+            <Switch>
+              <Route path="/history">history</Route>
+              <Route path="/favorites">favorites</Route>
+              <Route path="/">
+                <Player />
+              </Route>
+            </Switch>
+          </Box>
+        </Grid>
+      </Router>
+    </ThemeProvider>
   );
 }
 
