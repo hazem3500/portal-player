@@ -1,16 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import ReactPlayer from "react-player";
 import usePlayer from "../hooks/usePlayer";
 import { ipcRenderer } from "electron";
-
-const Container = styled.div`
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 60vh;
-`;
+import { Box, Flex, Text } from "@chakra-ui/core";
+import Toolbar from "./Toolbar";
+import useFullscreen from "../hooks/useFullscreeen";
 
 const URLForm = styled.form`
   height: 30px;
@@ -31,6 +26,11 @@ const URLForm = styled.form`
 
 export default function Player() {
   const { playerRef, state, dispatch } = usePlayer();
+  const containerRef = useRef();
+  const [isFullscreen, setIsFullscreen] = useFullscreen(containerRef);
+  useEffect(() => {
+    if(state.isFullscreen) setIsFullscreen(state.isFullscreen);
+  }, [state.isFullscreen])
 
   useEffect(() => {
     ipcRenderer.on("file-opened", (event, file) => {
@@ -44,79 +44,27 @@ export default function Player() {
   }
 
   return (
-    <div>
-      <Container>
+    <Flex ref={containerRef} minHeight="100vh" backgroundColor="gray.900" direction="column" position="relative">
+      <Flex flex={1} width="100%" alignItems="stretch">
         <ReactPlayer
           {...state}
           ref={playerRef}
-          height="80%"
-          width="80%"
+          width="100%"
+          height="auto"
         ></ReactPlayer>
-      </Container>
-      <div>
-        <div>
-          <input
-            type="range"
-            min={0}
-            max={1}
-            step="any"
-            value={state.played}
-            onMouseDown={() => dispatch({ type: "SEEK_MOUSE_DOWN" })}
-            onChange={e =>
-              dispatch({ type: "SEEK_CHANGE", payload: e.target.value })
-            }
-            onMouseUp={e =>
-              dispatch({ type: "SEEK_MOUSE_UP", payload: e.target.value })
-            }
-          />
-        </div>
-        <button onClick={() => dispatch({ type: "PLAY" })}>Play</button>
-        <button onClick={() => dispatch({ type: "PAUSE" })}>Pause</button>
-        <button onClick={() => dispatch({ type: "TOGGLE_LOOP" })}>Loop</button>
-        <div>
-          volume:
-          <input
-            type="range"
-            name="volume"
-            min={0}
-            max={100}
-            step={1}
-            value={state.volume * 100}
-            onChange={e =>
-              dispatch({
-                type: "SET_VOLUME",
-                payload: parseInt(e.target.value) / 100,
-              })
-            }
-          />
-        </div>
-        <div>
-          speed:
-          <input
-            type="range"
-            name="speed"
-            value={state.playbackRate * 100}
-            min={25}
-            max={400}
-            step={25}
-            onChange={e =>
-              dispatch({
-                type: "SET_PLAYBACK_RATE",
-                payload: parseInt(e.target.value) / 100,
-              })
-            }
-          />
-        </div>
-        <button onClick={() => dispatch({ type: "MUTE" })}>Mute</button>
-        <button onClick={() => dispatch({ type: "UNMUTE" })}>Unmute</button>
-      </div>
-      <pre>
-        <code>{JSON.stringify(state, null, 4)}</code>
-      </pre>
+      </Flex>
+      <Toolbar state={state} dispatch={dispatch}/>
+      <Box position="absolute" p={8} top={10} right={10} background="white">
+        <Text>
+          <pre>
+            <code>{JSON.stringify(state, null, 4)}</code>
+          </pre>
+        </Text>
+      </Box>
       <URLForm onSubmit={handleSubmit}>
         <input name="url" type="text" />
         <button type="submit">Set URL</button>
       </URLForm>
-    </div>
+    </Flex>
   );
 }

@@ -13,13 +13,13 @@ function reducer(state, action) {
     case "TOGGLE_LOOP":
       return { ...state, loop: !state.loop };
     case "SET_VOLUME":
-      return { ...state, volume: action.payload };
+      return { ...state, muted: action.payload === 0, volume: action.payload };
     case "MUTE":
       return { ...state, muted: true };
     case "UNMUTE":
-      return { ...state, muted: false };
+      return { ...state, muted: false, volume: state.volume === 0 ? 1 : state.volume };
     case "TOGGLE_MUTE":
-      return { ...state, muted: !state.muted };
+      return { ...state, muted: !state.muted, volume: state.volume === 0 ? 1 : state.volume };
     case "SET_PLAYBACK_RATE":
       return { ...state, playbackRate: action.payload };
     case "SEEK_MOUSE_DOWN":
@@ -28,7 +28,9 @@ function reducer(state, action) {
       return { ...state, played: parseFloat(action.payload) };
     case "SEEK_MOUSE_UP":
       return { ...state, seeking: false, played: parseFloat(action.payload) };
-
+    case "TOGGLE_FULLSCREEN":
+      if(state.isFullscreen) document.exitFullscreen();
+      return {...state, isFullscreen: !state.isFullscreen };
     default:
       throw new Error("invalid action");
   }
@@ -43,6 +45,7 @@ const defaultState = {
   playbackRate: 1,
   seeking: false,
   played: 0,
+  isFullscreen: false,
 };
 
 const usePlayer = (initialState = {}) => {
