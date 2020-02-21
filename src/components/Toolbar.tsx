@@ -45,6 +45,7 @@ const Toolbar = ({ state, dispatch }) => {
         value={state.played * 1000}
         min={0}
         max={1000}
+        isDisabled={!state.url}
         onChange={value =>
           dispatch({ type: "SEEK_CHANGE", payload: value / 1000 })
         }
