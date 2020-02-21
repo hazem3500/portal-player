@@ -29,8 +29,8 @@ export default function Player() {
   const containerRef = useRef();
   const [isFullscreen, setIsFullscreen] = useFullscreen(containerRef);
   useEffect(() => {
-    if(state.isFullscreen) setIsFullscreen(state.isFullscreen);
-  }, [state.isFullscreen])
+    if (state.isFullscreen) setIsFullscreen(state.isFullscreen);
+  }, [state.isFullscreen]);
 
   useEffect(() => {
     ipcRenderer.on("file-opened", (event, file) => {
@@ -44,16 +44,31 @@ export default function Player() {
   }
 
   return (
-    <Flex ref={containerRef} minHeight="100vh" backgroundColor="gray.900" direction="column" position="relative">
+    <Flex
+      ref={containerRef}
+      minHeight="100vh"
+      backgroundColor="gray.900"
+      direction="column"
+      position="relative"
+    >
       <Flex flex={1} width="100%" alignItems="stretch">
         <ReactPlayer
           {...state}
           ref={playerRef}
+          onPlay={() => dispatch({ type: "PLAY" })}
+          onPause={() => dispatch({ type: "PAUSE" })}
+          onProgress={({ played }) => {
+            if (!state.seeking)
+              dispatch({ type: "SET_PLAYED", payload: played });
+          }}
+          onDuration={duration =>
+            dispatch({ type: "SET_DURATION", payload: duration })
+          }
           width="100%"
           height="auto"
         ></ReactPlayer>
       </Flex>
-      <Toolbar state={state} dispatch={dispatch}/>
+      <Toolbar state={state} dispatch={dispatch} />
       <Box position="absolute" p={8} top={10} right={10} background="white">
         <Text>
           <pre>

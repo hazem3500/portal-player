@@ -14,23 +14,33 @@ function reducer(state, action) {
       return { ...state, loop: !state.loop };
     case "SET_VOLUME":
       return { ...state, muted: action.payload === 0, volume: action.payload };
+    case "SET_DURATION":
+      return { ...state, duration: action.payload };
     case "MUTE":
       return { ...state, muted: true };
     case "UNMUTE":
-      return { ...state, muted: false, volume: state.volume === 0 ? 1 : state.volume };
+      return {
+        ...state,
+        muted: false,
+        volume: state.volume === 0 ? 1 : state.volume,
+      };
     case "TOGGLE_MUTE":
-      return { ...state, muted: !state.muted, volume: state.volume === 0 ? 1 : state.volume };
+      return {
+        ...state,
+        muted: !state.muted,
+        volume: state.volume === 0 ? 1 : state.volume,
+      };
     case "SET_PLAYBACK_RATE":
       return { ...state, playbackRate: action.payload };
-    case "SEEK_MOUSE_DOWN":
-      return { ...state, seeking: true };
-    case "SEEK_CHANGE":
+    case "SET_PLAYED":
       return { ...state, played: parseFloat(action.payload) };
-    case "SEEK_MOUSE_UP":
-      return { ...state, seeking: false, played: parseFloat(action.payload) };
+    case "SEEK_CHANGE":
+      return { ...state, seeking: true, played: parseFloat(action.payload) };
+    case "SEEK_END":
+      return { ...state, seeking: false };
     case "TOGGLE_FULLSCREEN":
-      if(state.isFullscreen) document.exitFullscreen();
-      return {...state, isFullscreen: !state.isFullscreen };
+      if (state.isFullscreen) document.exitFullscreen();
+      return { ...state, isFullscreen: !state.isFullscreen };
     default:
       throw new Error("invalid action");
   }
@@ -46,6 +56,7 @@ const defaultState = {
   seeking: false,
   played: 0,
   isFullscreen: false,
+  duration: 0,
 };
 
 const usePlayer = (initialState = {}) => {
@@ -56,7 +67,10 @@ const usePlayer = (initialState = {}) => {
   });
 
   useEffect(() => {
-    if (playerRef.current) playerRef.current.seekTo(state.played);
+    if (playerRef.current && state.seeking) {
+      playerRef.current.seekTo(state.played);
+      dispatch({ type: "SEEK_END" });
+    }
   }, [state.played]);
 
   return { playerRef, state, dispatch };
