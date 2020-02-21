@@ -46,9 +46,11 @@ const Toolbar = ({ state, dispatch }) => {
         min={0}
         max={1000}
         isDisabled={!state.url}
+        onMouseDown={() => dispatch({ type: "SEEK_START" })}
         onChange={value =>
           dispatch({ type: "SEEK_CHANGE", payload: value / 1000 })
         }
+        onMouseUp={() => dispatch({ type: "SEEK_END" })}
       >
         <SliderTrack />
         <SliderFilledTrack />

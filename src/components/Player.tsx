@@ -59,7 +59,7 @@ export default function Player() {
           onPause={() => dispatch({ type: "PAUSE" })}
           onProgress={({ played }) => {
             if (!state.seeking)
-              dispatch({ type: "SET_PLAYED", payload: played });
+              dispatch({ type: "SEEK_CHANGE", payload: played });
           }}
           onDuration={duration =>
             dispatch({ type: "SET_DURATION", payload: duration })

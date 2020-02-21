@@ -32,10 +32,10 @@ function reducer(state, action) {
       };
     case "SET_PLAYBACK_RATE":
       return { ...state, playbackRate: action.payload };
-    case "SET_PLAYED":
-      return { ...state, played: parseFloat(action.payload) };
+    case "SEEK_START":
+      return { ...state, seeking: true };
     case "SEEK_CHANGE":
-      return { ...state, seeking: true, played: parseFloat(action.payload) };
+      return { ...state, played: parseFloat(action.payload) };
     case "SEEK_END":
       return { ...state, seeking: false };
     case "TOGGLE_FULLSCREEN":
@@ -67,11 +67,10 @@ const usePlayer = (initialState = {}) => {
   });
 
   useEffect(() => {
-    if (playerRef.current && state.seeking) {
+    if (playerRef.current) {
       playerRef.current.seekTo(state.played);
-      dispatch({ type: "SEEK_END" });
     }
-  }, [state.played]);
+  }, [state.seeking]);
 
   return { playerRef, state, dispatch };
 };
