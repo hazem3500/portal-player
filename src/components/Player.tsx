@@ -52,7 +52,6 @@ export default function Player() {
       position="relative"
     >
       <Flex flex={1} width="100%" alignItems="stretch">
-        
         <ReactPlayer
           {...state}
           ref={playerRef}
@@ -68,15 +67,9 @@ export default function Player() {
           width="100%"
           height="auto"
         ></ReactPlayer>
-      
       </Flex>
-<<<<<<< HEAD
-      <Toolbar state={state} dispatch={dispatch}/>
-      {/* <Box position="absolute" p={8} top={10} right={10} background="white">
-=======
       <Toolbar state={state} dispatch={dispatch} />
-      <Box position="absolute" p={8} top={10} right={10} background="white">
->>>>>>> 580c22567e3f6648c35a8a318d8216b1db30476f
+      {/* <Box position="absolute" p={8} top={10} right={10} background="white">
         <Text>
           <pre>
             <code>{JSON.stringify(state, null, 4)}</code>

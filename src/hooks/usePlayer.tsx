@@ -54,7 +54,7 @@ const defaultState = {
   muted: false,
   playbackRate: 1,
   seeking: false,
-  played: ,
+  played: 0,
   isFullscreen: false,
   duration: 0,
 };
