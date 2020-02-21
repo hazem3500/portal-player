@@ -4,7 +4,7 @@ import { MdPlayArrow, MdPause, MdLoop, MdVolumeMute, MdVolumeUp, MdVolumeDown, M
 
 const Toolbar = ({state, dispatch}) => {
     return (
-        <Stack spacing={8} isInline alignItems="center" bg="gray.800" py={4} px={8}>
+        <Stack spacing={8} isInline alignItems="center" bg="gray.600" py={4} px={8}>
             <Box color="white" cursor="pointer">
                 {
                     !state.playing 
@@ -12,8 +12,8 @@ const Toolbar = ({state, dispatch}) => {
                     : <MdPause size={40} onClick={() => dispatch({ type: "PAUSE" })}/>
                 }
             </Box>
-            <Slider 
-                value={state.played * 1000} 
+            <Slider color="blue"
+                value={state.played * 500} 
                 min={0}
                 max={1000} 
                 onChange={value => dispatch({ type: "SEEK_CHANGE", payload: value/1000 })}
@@ -30,7 +30,7 @@ const Toolbar = ({state, dispatch}) => {
                         {(!state.muted && state.volume > 0.5) && <MdVolumeUp size="40"/>}
                     </Box>
                     <PseudoBox transition="flex-basis 0.5s ease-out" flexBasis="0" opacity={0} _groupHover={{opacity: 1, marginLeft: 4, flexBasis: "200px"}}>
-                        <Slider 
+                        <Slider color="blue"
                             value={state.muted ? 0 : state.volume * 100} 
                             min={0}
                             max={100} 
@@ -55,7 +55,7 @@ const Toolbar = ({state, dispatch}) => {
                         </Text>
                     </PseudoBox>
                     <PseudoBox transition="flex-basis 0.5s ease-out" flexBasis="0" opacity={0} _groupHover={{opacity: 1, marginLeft: 4 ,flexBasis: "200px", padding: 1}}>
-                        <Slider 
+                        <Slider color="blue"
                             value={state.playbackRate * 100}
                             min={25}
                             max={400}

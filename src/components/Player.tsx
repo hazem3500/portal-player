@@ -46,21 +46,23 @@ export default function Player() {
   return (
     <Flex ref={containerRef} minHeight="100vh" backgroundColor="gray.900" direction="column" position="relative">
       <Flex flex={1} width="100%" alignItems="stretch">
+        
         <ReactPlayer
           {...state}
           ref={playerRef}
           width="100%"
           height="auto"
         ></ReactPlayer>
+      
       </Flex>
       <Toolbar state={state} dispatch={dispatch}/>
-      <Box position="absolute" p={8} top={10} right={10} background="white">
+      {/* <Box position="absolute" p={8} top={10} right={10} background="white">
         <Text>
           <pre>
             <code>{JSON.stringify(state, null, 4)}</code>
           </pre>
         </Text>
-      </Box>
+      </Box> */}
       <URLForm onSubmit={handleSubmit}>
         <input name="url" type="text" />
         <button type="submit">Set URL</button>
