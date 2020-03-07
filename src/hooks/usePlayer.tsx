@@ -41,8 +41,12 @@ function reducer(state, action) {
     case "TOGGLE_FULLSCREEN":
       if (state.isFullscreen) document.exitFullscreen();
       return { ...state, isFullscreen: !state.isFullscreen };
+    case "SET_REMOTE_PEER":
+      return { ...state, remotePeer: action.payload };
+    case "SET_STATE":
+      return { ...state, ...action.payload };
     default:
-      throw new Error("invalid action");
+      throw new Error(`invalid action ${action.type}`);
   }
 }
 
@@ -57,6 +61,7 @@ const defaultState = {
   played: 0,
   isFullscreen: false,
   duration: 0,
+  remotePeer: null,
 };
 
 const usePlayer = (initialState = {}) => {
@@ -71,6 +76,12 @@ const usePlayer = (initialState = {}) => {
       playerRef.current.seekTo(state.played);
     }
   }, [state.seeking]);
+
+  useEffect(() => {
+    if (state.remotePeer) {
+      state.remotePeer.send(state);
+    }
+  }, [state]);
 
   return { playerRef, state, dispatch };
 };

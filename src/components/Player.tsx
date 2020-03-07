@@ -6,6 +6,7 @@ import { ipcRenderer } from "electron";
 import { Box, Flex, Text } from "@chakra-ui/core";
 import Toolbar from "./Toolbar";
 import useFullscreen from "../hooks/useFullscreeen";
+import ConnectionBar from "./ConnectionBar";
 
 const URLForm = styled.form`
   height: 30px;
@@ -69,17 +70,18 @@ export default function Player() {
         ></ReactPlayer>
       </Flex>
       <Toolbar state={state} dispatch={dispatch} />
-      {/* <Box position="absolute" p={8} top={10} right={10} background="white">
-        <Text>
+      <Box position="absolute" p={8} top={10} right={10} background="white">
+        <Text as="div">
           <pre>
             <code>{JSON.stringify(state, null, 4)}</code>
           </pre>
         </Text>
-      </Box> */}
+      </Box>
       <URLForm onSubmit={handleSubmit}>
         <input name="url" type="text" />
         <button type="submit">Set URL</button>
       </URLForm>
+      <ConnectionBar state={state} dispatch={dispatch} />
     </Flex>
   );
 }
