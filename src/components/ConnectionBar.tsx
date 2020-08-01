@@ -10,7 +10,7 @@ const ConnectionBar = ({ state, dispatch, player }) => {
 
   useEffect(() => {
     if(remoteConnection) {
-      remoteConnection.send(JSON.stringify(state))
+      remoteConnection.send(JSON.stringify({...state, seeking: false }))
     }
   }, [state.playing, state.playbackRate, state.url, state.seeking, state.loop])
 

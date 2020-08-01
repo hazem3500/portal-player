@@ -43,7 +43,9 @@ function reducer(state, action) {
       if (state.isFullscreen) document.exitFullscreen();
       return { ...state, isFullscreen: !state.isFullscreen };
     case "SET_STATE":
-      return { ...state, ...action.payload };
+      return { ...state, ...action.payload, remoteChanged: true };
+      case "END_REMOTE_CHANGE":
+        return { ...state, remoteChanged: false };
     default:
       throw new Error(`invalid action ${action.type}`);
   }
@@ -60,6 +62,7 @@ const defaultState = {
   played: 0,
   isFullscreen: false,
   duration: 0,
+  remoteChanged: false
 };
 
 const usePlayer = (initialState = {}) => {
@@ -74,7 +77,8 @@ const usePlayer = (initialState = {}) => {
     if (playerRef.current) {
       playerRef.current.seekTo(state.played);
     }
-  }, [state.seeking]);
+    dispatch({ type: 'END_REMOTE_CHANGE'})
+  }, [state.seeking, state.remoteChanged]);
 
   return { playerRef, state, dispatch };
 };
