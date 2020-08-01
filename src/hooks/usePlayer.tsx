@@ -1,9 +1,10 @@
 import React, { useReducer, useRef, useEffect } from "react";
 
 function reducer(state, action) {
+  console.log({state, action});
   switch (action.type) {
     case "SET_URL":
-      return { ...state, url: action.payload };
+      return { ...state, url: action.payload}
     case "PLAY":
       return { ...state, playing: true };
     case "PAUSE":
@@ -41,8 +42,6 @@ function reducer(state, action) {
     case "TOGGLE_FULLSCREEN":
       if (state.isFullscreen) document.exitFullscreen();
       return { ...state, isFullscreen: !state.isFullscreen };
-    case "SET_REMOTE_PEER":
-      return { ...state, remotePeer: action.payload };
     case "SET_STATE":
       return { ...state, ...action.payload };
     default:
@@ -61,7 +60,6 @@ const defaultState = {
   played: 0,
   isFullscreen: false,
   duration: 0,
-  remotePeer: null,
 };
 
 const usePlayer = (initialState = {}) => {
@@ -72,16 +70,11 @@ const usePlayer = (initialState = {}) => {
   });
 
   useEffect(() => {
+    console.log('seek');
     if (playerRef.current) {
       playerRef.current.seekTo(state.played);
     }
   }, [state.seeking]);
-
-  useEffect(() => {
-    if (state.remotePeer) {
-      state.remotePeer.send(state);
-    }
-  }, [state]);
 
   return { playerRef, state, dispatch };
 };

@@ -1,5 +1,13 @@
 {
-  "presets": ["@babel/typescript", "@babel/env", "@babel/react"],
+  "presets": [
+    "@babel/typescript",
+    ["@babel/preset-env",{
+      "targets": {
+        "esmodules": true
+      }
+    }],
+    "@babel/react"
+    ],
   "plugins": [
     "@babel/proposal-class-properties",
     "@babel/proposal-object-rest-spread",

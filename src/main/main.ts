@@ -3,6 +3,8 @@ import installExtension, {
   REACT_DEVELOPER_TOOLS,
 } from "electron-devtools-installer";
 import fs from "fs";
+import path from "path";
+import url from 'url';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -47,6 +49,20 @@ function devToolsInstaller() {
     .catch((err: any) => console.log("An error occurred: ", err));
 }
 
+const singleInstanceLock = app.requestSingleInstanceLock();
+
+if (!singleInstanceLock) {
+  app.quit();
+}
+
+app.on('second-instance', (event, argv, cwd) => {
+  logEverywhere({ event, argv, cwd })
+  const secondInstanceUrl = new URL(argv.slice(-1));
+  logEverywhere(secondInstanceUrl.searchParams)
+  if(secondInstanceUrl.searchParams.has('url'))
+    mainWindow.webContents.send("file-opened", secondInstanceUrl.searchParams.get('url'));
+})
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -54,6 +70,7 @@ app.on("ready", () => {
   createWindow();
   devToolsInstaller();
   Menu.setApplicationMenu(applicationMenu);
+
 });
 
 // Quit when all windows are closed.
@@ -167,3 +184,28 @@ const template = [
 ];
 
 const applicationMenu = Menu.buildFromTemplate(template);
+
+// handle navigating from portal-player://...
+app.on('open-url', function (event, data) {
+  event.preventDefault();
+  console.log(data)
+});
+
+app.removeAsDefaultProtocolClient('portal-player');
+
+// If we are running a non-packaged version of the app && on windows
+if (process.env.NODE_ENV === 'development' && process.platform === 'win32') {
+  // Set the path of electron.exe and your app.
+  // These two additional parameters are only available on windows.
+  app.setAsDefaultProtocolClient('portal-player', process.execPath, [path.resolve(process.argv[1])]);
+} else {
+  app.setAsDefaultProtocolClient('portal-player');
+}
+
+
+function logEverywhere(s) {
+  console.log(s)
+  if (mainWindow && mainWindow.webContents) {
+    mainWindow.webContents.executeJavaScript(`console.log("${s}")`)
+  }
+}

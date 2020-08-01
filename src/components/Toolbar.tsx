@@ -48,7 +48,10 @@ const Toolbar = ({ state, dispatch }) => {
         isDisabled={!state.url}
         onMouseDown={() => dispatch({ type: "SEEK_START" })}
         onChange={value =>
-          dispatch({ type: "SEEK_CHANGE", payload: value / 1000 })
+          { 
+            console.log('seek change')
+            dispatch({ type: "SEEK_CHANGE", payload: value / 1000 })
+          }
         }
         onMouseUp={() => dispatch({ type: "SEEK_END" })}
       >

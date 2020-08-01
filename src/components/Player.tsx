@@ -59,6 +59,7 @@ export default function Player() {
           onPlay={() => dispatch({ type: "PLAY" })}
           onPause={() => dispatch({ type: "PAUSE" })}
           onProgress={({ played }) => {
+            console.log('progress')
             if (!state.seeking)
               dispatch({ type: "SEEK_CHANGE", payload: played });
           }}
@@ -73,7 +74,9 @@ export default function Player() {
       <Box position="absolute" p={8} top={10} right={10} background="white">
         <Text as="div">
           <pre>
-            <code>{JSON.stringify(state, null, 4)}</code>
+            <code>
+              {JSON.stringify({ ...state, remoteConnection: null }, null, 4)}
+            </code>
           </pre>
         </Text>
       </Box>
