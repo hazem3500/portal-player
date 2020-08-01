@@ -3,7 +3,7 @@ import { Box, Button, Input, Flex } from "@chakra-ui/core";
 import Peer from 'peerjs';
 
 
-const ConnectionBar = ({ state, dispatch }) => {
+const ConnectionBar = ({ state, dispatch, player }) => {
   const [peer, setPeer] = useState();
   const [sessionId, setSessionId] = useState();
   const [remoteConnection, setRemoteConnection] = useState()
@@ -12,7 +12,7 @@ const ConnectionBar = ({ state, dispatch }) => {
     if(remoteConnection) {
       remoteConnection.send(JSON.stringify(state))
     }
-  }, [state])
+  }, [state.playing, state.playbackRate, state.url, state.seeking, state.loop])
 
   function startSession() {
     const peer = new Peer();
@@ -25,11 +25,12 @@ const ConnectionBar = ({ state, dispatch }) => {
       conn.on("data", data => {
         // Will print 'hi!'
         console.log(data);
+        dispatch({ type: "SET_STATE", payload: JSON.parse(data) })
+
       });
       conn.on("open", () => {
         console.log('connection open');
         setRemoteConnection(conn)
-        conn.send("hello!");
       });
     })
     
@@ -42,8 +43,11 @@ const ConnectionBar = ({ state, dispatch }) => {
     if (!peer) currPeer = await startSession();
     console.log(currPeer);
     const connection = currPeer.connect(sessionId);
+    setRemoteConnection(connection);
     connection.on("data", data => {
+      console.log(data)
       dispatch({type: "SET_STATE", payload: JSON.parse(data)})
+      player.current.seekTo(state.played);
     })
   }
 

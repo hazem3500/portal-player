@@ -84,7 +84,7 @@ export default function Player() {
         <input name="url" type="text" />
         <button type="submit">Set URL</button>
       </URLForm>
-      <ConnectionBar state={state} dispatch={dispatch} />
+      <ConnectionBar player={playerRef} state={state} dispatch={dispatch} />
     </Flex>
   );
 }
