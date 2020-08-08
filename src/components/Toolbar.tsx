@@ -41,29 +41,6 @@ const Toolbar = ({ state, dispatch }) => {
             .substr(11, 8)}
         </Text>
       </Box>
-      <Slider
-        value={state.played * 1000}
-        min={0}
-        max={1000}
-        isDisabled={!state.url}
-        onMouseDown={() => dispatch({ type: "SEEK_START" })}
-        onChange={value =>
-          { 
-            console.log('seek change')
-            dispatch({ type: "SEEK_CHANGE", payload: value / 1000 })
-          }
-        }
-        onMouseUp={() => dispatch({ type: "SEEK_END" })}
-      >
-        <SliderTrack />
-        <SliderFilledTrack />
-        <SliderThumb />
-      </Slider>
-      <Box>
-        <Text color="white" fontWeight={600}>
-          {new Date(state.duration * 1000).toISOString().substr(11, 8)}
-        </Text>
-      </Box>
       <PseudoBox
         transition="flex-basis 0.5s ease-out"
         role="group"
@@ -160,6 +137,29 @@ const Toolbar = ({ state, dispatch }) => {
           </PseudoBox>
         </Flex>
       </PseudoBox>
+      <Slider
+        value={state.played * 1000}
+        min={0}
+        max={1000}
+        isDisabled={!state.url}
+        onMouseDown={() => dispatch({ type: "SEEK_START" })}
+        onChange={value =>
+          { 
+            console.log('seek change')
+            dispatch({ type: "SEEK_CHANGE", payload: value / 1000 })
+          }
+        }
+        onMouseUp={() => dispatch({ type: "SEEK_END" })}
+      >
+        <SliderTrack />
+        <SliderFilledTrack />
+        <SliderThumb />
+      </Slider>
+      <Box>
+        <Text color="white" fontWeight={600}>
+          {new Date(state.duration * 1000).toISOString().substr(11, 8)}
+        </Text>
+      </Box>
       <Box
         cursor="pointer"
         transition="color 0.2s ease-out"

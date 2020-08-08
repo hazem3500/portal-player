@@ -3,10 +3,11 @@ import styled from "styled-components";
 import ReactPlayer from "react-player";
 import usePlayer from "../hooks/usePlayer";
 import { ipcRenderer } from "electron";
-import { Box, Flex, Text } from "@chakra-ui/core";
-import Toolbar from "./Toolbar";
+import { Box, Button, Flex, Input, Text } from "@chakra-ui/core";
+import Toolbar from "../components/Toolbar";
 import useFullscreen from "../hooks/useFullscreeen";
-import ConnectionBar from "./ConnectionBar";
+import ConnectionBar from "../components/ConnectionBar";
+import { useLocation } from "react-router-dom";
 
 const URLForm = styled.form`
   height: 30px;
@@ -14,14 +15,6 @@ const URLForm = styled.form`
 
   input {
     flex: 1;
-    padding: 5px;
-  }
-
-  button {
-    border: none;
-    background: blueviolet;
-    color: white;
-    outline: none;
   }
 `;
 
@@ -32,17 +25,21 @@ export default function Player() {
   useEffect(() => {
     if (state.isFullscreen) setIsFullscreen(state.isFullscreen);
   }, [state.isFullscreen]);
-
+  
   useEffect(() => {
     ipcRenderer.on("file-opened", (event, file) => {
       dispatch({ type: "SET_URL", payload: file });
     });
   }, [dispatch]);
+  
+  const location = useLocation();
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    dispatch({ type: "SET_URL", payload: e.target.url.value });
-  }
+  useEffect(() => {
+    if (location.state && location.state.videoUrl) {
+      dispatch({ type: "SET_URL", payload: location.state.videoUrl });
+      dispatch({ type: "PLAY" });
+    }
+  }, [location])
 
   return (
     <Flex
@@ -52,6 +49,9 @@ export default function Player() {
       direction="column"
       position="relative"
     >
+      <Box position="absolute" top="0" left="0" right="0" height="100px" zIndex="1000">
+        <ConnectionBar player={playerRef} state={state} dispatch={dispatch} />
+      </Box>
       <Flex flex={1} width="100%" alignItems="stretch">
         <ReactPlayer
           {...state}
@@ -59,7 +59,7 @@ export default function Player() {
           onPlay={() => dispatch({ type: "PLAY" })}
           onPause={() => dispatch({ type: "PAUSE" })}
           onProgress={({ played }) => {
-            console.log('progress', played)
+            console.log("progress", played);
             if (!state.seeking && !state.remoteChanged)
               dispatch({ type: "SEEK_CHANGE", payload: played });
           }}
@@ -71,20 +71,6 @@ export default function Player() {
         ></ReactPlayer>
       </Flex>
       <Toolbar state={state} dispatch={dispatch} />
-      <Box position="absolute" p={8} top={10} right={10} background="white">
-        <Text as="div">
-          <pre>
-            <code>
-              {JSON.stringify({ ...state, remoteConnection: null }, null, 4)}
-            </code>
-          </pre>
-        </Text>
-      </Box>
-      <URLForm onSubmit={handleSubmit}>
-        <input name="url" type="text" />
-        <button type="submit">Set URL</button>
-      </URLForm>
-      <ConnectionBar player={playerRef} state={state} dispatch={dispatch} />
     </Flex>
   );
 }

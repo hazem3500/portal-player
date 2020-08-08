@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, Input, Flex } from "@chakra-ui/core";
+import { Box, Button, Input, Flex, useToast, IconButton, Grid, Tooltip, PseudoBox, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader, PopoverTrigger } from "@chakra-ui/core";
 import Peer from 'peerjs';
+import { MdGroupAdd, MdGroup, MdLink } from "react-icons/md";
 
 
 const ConnectionBar = ({ state, dispatch, player }) => {
   const [peer, setPeer] = useState();
   const [sessionId, setSessionId] = useState();
   const [remoteConnection, setRemoteConnection] = useState()
+  const toast = useToast()
 
   useEffect(() => {
     if(remoteConnection && !state.remoteChanged) {
@@ -19,6 +21,14 @@ const ConnectionBar = ({ state, dispatch, player }) => {
     peer.on('open', function (id) {
       console.log('My peer ID is: ' + id);
       setSessionId(id)
+      navigator.clipboard.writeText(id);
+      toast({
+        title: "Session started.",
+          description: "Session link copied to clipboard, send the link the your friend!",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+      })
     });
     peer.on('connection', conn => {
       
@@ -51,22 +61,123 @@ const ConnectionBar = ({ state, dispatch, player }) => {
     })
   }
 
+  
+
   return (
-    <Flex>
-      <Input
-        type="text"
-        value={sessionId}
-        onChange={
-          ({ target: { value } }) => {
-            console.log('change session id');
-            setSessionId(value)
-          }
-        }
-        placeholder={sessionId}
-      />
-      <Button onClick={() => startSession()}>Start Session</Button>
-      <Button onClick={() => joinSession(sessionId)}>Join Session</Button>
-    </Flex>
+    <PseudoBox
+      opacity="0"
+      transition="all 0.2s ease-out"
+      height="100%"
+      _hover={{
+        opacity: 1,
+        background: "linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4514180672268907) 60%, rgba(0,212,255,0) 100%)"
+      }}
+    >
+      <Grid
+        autoFlow="column"
+        gap={5}
+        justifyContent="end"
+        py={2}
+        px={8}
+        position="relative"
+      >
+        <Tooltip closeOnClick label="Play from URL" placement="bottom-start">
+          <Box position="relative">
+            <Popover>
+              {({ onClose }) => (
+                <>
+                  <PopoverTrigger>
+                    <Box
+                      cursor="pointer"
+                      color="white"
+                      size="40px"
+                      as={MdLink}
+                    ></Box>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    zIndex={4}
+                    position="absolute"
+                    width="500px"
+                    top="100%"
+                    right="0"
+                  >
+                    <PopoverArrow />
+                    <PopoverCloseButton />
+                    <PopoverHeader>Enter URL!</PopoverHeader>
+                    <PopoverBody>
+                      <Box
+                        as="form"
+                        onSubmit={e => {
+                          e.preventDefault();
+                          console.log(e.target.value)
+                          dispatch({ type: "SET_URL", payload: e.target.url.value });
+                          onClose();
+                        }}
+                      >
+                        <Input name="url" placeholder="https://www.youtube.com/watch?v=123" />
+                      </Box>
+                    </PopoverBody>
+                  </PopoverContent>
+                </>
+              )}
+            </Popover>
+          </Box>
+        </Tooltip>
+        <Tooltip label="start session" placement="bottom-start">
+          <Box>
+            <Box
+              cursor="pointer"
+              color="white"
+              size="40px"
+              as={MdGroupAdd}
+              onClick={() => startSession()}
+            ></Box>
+          </Box>
+        </Tooltip>
+        <Tooltip closeOnClick label="join session" placement="bottom-start">
+          <Box position="relative">
+            <Popover>
+              {({ onClose }) => (
+                <>
+                  <PopoverTrigger>
+                    <Box
+                      cursor="pointer"
+                      color="white"
+                      size="40px"
+                      as={MdGroup}
+                      // onClick={() => joinSession(sessionId)}
+                    ></Box>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    zIndex={4}
+                    position="absolute"
+                    width="500px"
+                    top="100%"
+                    right="0"
+                  >
+                    <PopoverArrow />
+                    <PopoverCloseButton />
+                    <PopoverHeader>Enter session ID!</PopoverHeader>
+                    <PopoverBody>
+                      <Box
+                        as="form"
+                        onSubmit={e => {
+                          e.preventDefault();
+                          joinSession(e.target.sessionID.value);
+                          onClose();
+                        }}
+                      >
+                        <Input name="sessionID" />
+                      </Box>
+                    </PopoverBody>
+                  </PopoverContent>
+                </>
+              )}
+            </Popover>
+          </Box>
+        </Tooltip>
+      </Grid>
+    </PseudoBox>
   );
 };
 

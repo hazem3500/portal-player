@@ -1,7 +1,7 @@
 import React from "react";
 import { Stack, Text, Box, PseudoBox } from "@chakra-ui/core";
 import { Link, useRouteMatch } from "react-router-dom";
-import { MdPlayArrow, MdFavorite, MdHistory } from "react-icons/md";
+import { MdPlayArrow, MdFavorite, MdHistory, MdSearch } from "react-icons/md";
 import styled from "@emotion/styled";
 
 const StyledLink = styled(Link)`
@@ -36,9 +36,9 @@ const SideMenu = () => {
     <Box bg="gray.600" color="gray.100">
       <SideMenuButton to="/" icon={<MdPlayArrow size={32} />} label="Home" />
       <SideMenuButton
-        to="/favorites"
-        icon={<MdFavorite size={32} />}
-        label="favorites"
+        to="/search"
+        icon={<MdSearch size={32} />}
+        label="search"
       />
       <SideMenuButton
         to="/history"
