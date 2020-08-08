@@ -16,7 +16,7 @@ function reducer(state, action) {
     case "SET_VOLUME":
       return { ...state, muted: action.payload === 0, volume: action.payload };
     case "SET_DURATION":
-      return { ...state, duration: action.payload };
+      return { ...state, duration: action.payload, remoteChanged: true };
     case "MUTE":
       return { ...state, muted: true };
     case "UNMUTE":
@@ -71,6 +71,14 @@ const usePlayer = (initialState = {}) => {
     ...defaultState,
     ...initialState,
   });
+
+  useEffect(() => {
+    if(localStorage.getItem('player-state')) dispatch({type: 'SET_STATE', payload: JSON.parse(localStorage.getItem('player-state'))})
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem('player-state', JSON.stringify(state))
+  }, [state])
 
   useEffect(() => {
     console.log('seek');
