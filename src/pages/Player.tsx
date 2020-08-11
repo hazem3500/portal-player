@@ -18,6 +18,11 @@ const URLForm = styled.form`
   }
 `;
 
+const StyledPlayer = styled(ReactPlayer)`
+  display: flex;
+  max-height: calc(100vh - 75px);
+`
+
 export default function Player() {
   const { playerRef, state, dispatch } = usePlayer();
   const containerRef = useRef();
@@ -53,7 +58,7 @@ export default function Player() {
         <ConnectionBar player={playerRef} state={state} dispatch={dispatch} />
       </Box>
       <Flex flex={1} width="100%" alignItems="stretch">
-        <ReactPlayer
+        <StyledPlayer
           {...state}
           ref={playerRef}
           onPlay={() => dispatch({ type: "PLAY" })}
@@ -68,7 +73,7 @@ export default function Player() {
           }
           width="100%"
           height="auto"
-        ></ReactPlayer>
+        ></StyledPlayer>
       </Flex>
       <Toolbar state={state} dispatch={dispatch} />
     </Flex>
