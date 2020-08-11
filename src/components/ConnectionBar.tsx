@@ -6,7 +6,6 @@ import { MdGroupAdd, MdGroup, MdLink } from "react-icons/md";
 
 const ConnectionBar = ({ state, dispatch, player }) => {
   const [peer, setPeer] = useState();
-  const [sessionId, setSessionId] = useState();
   const [remoteConnection, setRemoteConnection] = useState()
   const toast = useToast()
 
@@ -19,8 +18,6 @@ const ConnectionBar = ({ state, dispatch, player }) => {
   function startSession() {
     const peer = new Peer();
     peer.on('open', function (id) {
-      console.log('My peer ID is: ' + id);
-      setSessionId(id)
       navigator.clipboard.writeText(id);
       toast({
         title: "Session started.",
@@ -33,13 +30,9 @@ const ConnectionBar = ({ state, dispatch, player }) => {
     peer.on('connection', conn => {
       
       conn.on("data", data => {
-        // Will print 'hi!'
-        console.log(data);
         dispatch({ type: "SET_STATE", payload: JSON.parse(data) })
-
       });
       conn.on("open", () => {
-        console.log('connection open');
         setRemoteConnection(conn)
       });
     })
@@ -49,15 +42,25 @@ const ConnectionBar = ({ state, dispatch, player }) => {
   }
 
   async function joinSession(sessionId) {
-    let currPeer = peer;
-    if (!peer) currPeer = await startSession();
-    console.log(currPeer);
-    const connection = currPeer.connect(sessionId);
-    setRemoteConnection(connection);
-    connection.on("data", data => {
-      console.log(data)
-      dispatch({type: "SET_STATE", payload: JSON.parse(data)})
-      player.current.seekTo(state.played);
+    const peer = new Peer();
+    peer.on('open', function (id) {
+      const connection = peer.connect(sessionId);
+      setRemoteConnection(connection);
+
+      connection.on("open", data => {
+        toast({
+          title: "Joined Session",
+          description: "Start playing a video and it'll sync with your friend!",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        })
+      })
+
+      connection.on("data", data => {
+        dispatch({type: "SET_STATE", payload: JSON.parse(data)})
+        player.current.seekTo(state.played);
+      })
     })
   }
 
