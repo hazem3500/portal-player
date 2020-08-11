@@ -20,9 +20,37 @@ export async function searchVimeo(query, next = '') {
     return {
       videos,
       next: res.page + 1,
+      provider: 'vimeo'
     };
 }
 
+export async function searchDailyMotion(query, next = '') {
+  try {
+    const res = await fetch(`https://api.dailymotion.com/videos?search=${query}&limit=${videosPerPage}&fields=created_time%2Cdescription%2Cid%2Cthumbnail_360_url%2Curl%2Ctitle`)
+      .then(data => data.json())
+    const videos = res.data.map(
+      ({ url, title, id, description, created_time, thumbnail_360_url }) => ({
+        id,
+        title,
+        description,
+        publishedAt: created_time,
+        thumbnail: thumbnail_360_url,
+        url,
+      }),
+    );
+    return {
+      videos,
+      next: res.page + 1,
+      provider: 'dailymotion'
+    };
+  } catch(e) {
+    return {
+      videos: [],
+      next: 0,
+      provider: 'dailymotion'
+    }
+  }
+}
 export async function queryYouTube(query, next = '') {
     const res = await fetch(
       `https://content.googleapis.com/youtube/v3/search?q=${query}&type=video&part=snippet&maxResults=${videosPerPage}&key=${process.env.YOUTUBE_API_KEY}&pageToken=${next}`,
@@ -43,14 +71,18 @@ export async function queryYouTube(query, next = '') {
     return {
         videos,
         next: res.nextPageToken,
+        provider: 'youtube'
     };
 }
 
-export async function searchVideos(query, next = {}) {
-  const data = await Promise.all([queryYouTube(query, next.youtube), searchVimeo(query, next.vimeo)]);
-  const videos = data.flatMap(provider => provider.videos)
+export async function searchVideos(query, providers, next = {}) {
+  const data = await Promise.all([
+    queryYouTube(query, next.youtube),
+    searchVimeo(query, next.vimeo),
+    searchDailyMotion(query, next.dailymotion)]);
+  const videos = data.filter(data => providers.includes(data.provider)).flatMap(provider => provider.videos)
   return {
     videos,
-    next: { youtube: data[0].next, vimeo: data[1].next },
+    next: { youtube: data[0].next, vimeo: data[1].next, dailymotion: data[2].next },
   };
 }
