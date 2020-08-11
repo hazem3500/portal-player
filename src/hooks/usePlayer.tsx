@@ -73,11 +73,11 @@ const usePlayer = (initialState = {}) => {
   });
 
   useEffect(() => {
-    if(localStorage.getItem('player-state')) dispatch({type: 'SET_STATE', payload: JSON.parse(localStorage.getItem('player-state'))})
+    if(sessionStorage.getItem('player-state')) dispatch({type: 'SET_STATE', payload: JSON.parse(sessionStorage.getItem('player-state'))})
   }, [])
 
   useEffect(() => {
-    localStorage.setItem('player-state', JSON.stringify(state))
+    sessionStorage.setItem('player-state', JSON.stringify(state))
   }, [state])
 
   useEffect(() => {
