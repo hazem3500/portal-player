@@ -64,7 +64,6 @@ export default function Player() {
           onPlay={() => dispatch({ type: "PLAY" })}
           onPause={() => dispatch({ type: "PAUSE" })}
           onProgress={({ played }) => {
-            console.log("progress", played);
             if (!state.seeking && !state.remoteChanged)
               dispatch({ type: "SEEK_CHANGE", payload: played });
           }}

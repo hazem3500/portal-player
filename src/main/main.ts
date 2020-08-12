@@ -100,7 +100,7 @@ exports.getFileFromUser = () => {
     filters: [
       {
         name: "Video Files",
-        extensions: ["mp4","jpeg","mpeg","png","jpg"],
+        extensions: ["mp3" ,"mp4","wmv","mov","m4a"],
       },
     ],
   });

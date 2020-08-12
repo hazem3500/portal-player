@@ -81,12 +81,17 @@ const usePlayer = (initialState = {}) => {
   }, [state])
 
   useEffect(() => {
-    console.log('seek');
     if (playerRef.current) {
       playerRef.current.seekTo(state.played);
     }
     dispatch({ type: 'END_REMOTE_CHANGE'})
   }, [state.seeking, state.remoteChanged]);
+
+  useEffect(() => {
+    dispatch({ type: 'SEEK_CHANGE', payload: 0 })
+  }, [state.url]);
+
+
 
   return { playerRef, state, dispatch };
 };

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Box, Button, Input, Flex, useToast, IconButton, Grid, Tooltip, PseudoBox, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader, PopoverTrigger } from "@chakra-ui/core";
 import Peer from 'peerjs';
 import { MdGroupAdd, MdGroup, MdLink } from "react-icons/md";
-
+import { EMAIL_REGEX } from "../constants/REGEX";
 
 const ConnectionBar = ({ state, dispatch, player }) => {
   const [peer, setPeer] = useState();
@@ -34,6 +34,13 @@ const ConnectionBar = ({ state, dispatch, player }) => {
       });
       conn.on("open", () => {
         setRemoteConnection(conn)
+        toast({
+            title: "Someone has just joined your session!",
+            description: "Play a video and it will sync with your friend!",
+            status: "success",
+            duration: 9000,
+            isClosable: true,
+        })
       });
     })
     
@@ -44,6 +51,7 @@ const ConnectionBar = ({ state, dispatch, player }) => {
   async function joinSession(sessionId) {
     const peer = new Peer();
     peer.on('open', function (id) {
+      console.log('open')
       const connection = peer.connect(sessionId);
       setRemoteConnection(connection);
 
@@ -60,6 +68,16 @@ const ConnectionBar = ({ state, dispatch, player }) => {
       connection.on("data", data => {
         dispatch({type: "SET_STATE", payload: JSON.parse(data)})
         player.current.seekTo(state.played);
+      })
+
+      connection.on('error', data => {
+        toast({
+          title: "Invalid session ID",
+          description: "Please enter valid session ID!",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        })
       })
     })
   }
@@ -112,9 +130,19 @@ const ConnectionBar = ({ state, dispatch, player }) => {
                         as="form"
                         onSubmit={e => {
                           e.preventDefault();
-                          console.log(e.target.value)
-                          dispatch({ type: "SET_URL", payload: e.target.url.value });
-                          onClose();
+                          if(!EMAIL_REGEX.test(e.target.url.value)) {
+                            toast({
+                              title: "Invalid URL.",
+                              description: "Please enter a vaild URL!",
+                              status: "error",
+                              duration: 9000,
+                              isClosable: true,
+                            })
+                          }
+                          else {
+                            dispatch({ type: "SET_URL", payload: e.target.url.value });
+                            onClose();
+                          }
                         }}
                       >
                         <Input name="url" placeholder="https://www.youtube.com/watch?v=123" />
