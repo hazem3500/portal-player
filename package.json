@@ -117,7 +117,7 @@
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
     "css-loader": "^3.2.0",
-    "electron": "5.0.4",
+    "electron": "7.2.4",
     "electron-devtools-installer": "^2.2.4",
     "eslint": "^6.5.1",
     "eslint-config-airbnb": "^18.0.1",
