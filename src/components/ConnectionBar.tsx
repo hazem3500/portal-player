@@ -102,7 +102,7 @@ const ConnectionBar = ({ state, dispatch, player }) => {
         px={8}
         position="relative"
       >
-         <Tooltip label="translate" placement="bottom-start">
+         <Tooltip label="transcribe" placement="bottom-start">
           <Box>
             <Box
               cursor="pointer"
