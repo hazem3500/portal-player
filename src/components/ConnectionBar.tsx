@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, Button, Input, Flex, useToast, IconButton, Grid, Tooltip, PseudoBox, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader, PopoverTrigger } from "@chakra-ui/core";
 import Peer from 'peerjs';
-import { MdGroupAdd, MdGroup, MdLink } from "react-icons/md";
+import { MdGroupAdd, MdGroup, MdLink, MdTranslate, MdTransform } from "react-icons/md";
 
 
 const ConnectionBar = ({ state, dispatch, player }) => {
@@ -84,6 +84,40 @@ const ConnectionBar = ({ state, dispatch, player }) => {
         px={8}
         position="relative"
       >
+         <Tooltip label="translate" placement="bottom-start">
+          <Box>
+            <Box
+              cursor="pointer"
+              color="white"
+              size="40px"
+              as={MdTransform}
+              onClick={() => toast({
+                title: "transcribing video",
+                description: "Please wait a while the video is being transcribed",
+                status: "success",
+                duration: 9000,
+                isClosable: true,
+              })}
+            ></Box>
+          </Box>
+        </Tooltip>
+         <Tooltip label="translate" placement="bottom-start">
+          <Box>
+            <Box
+              cursor="pointer"
+              color="white"
+              size="40px"
+              as={MdTranslate}
+              onClick={() => toast({
+                title: "Translating video",
+                description: "Please wait a while the video is being translated",
+                status: "success",
+                duration: 9000,
+                isClosable: true,
+              })}
+            ></Box>
+          </Box>
+        </Tooltip>
         <Tooltip closeOnClick label="Play from URL" placement="bottom-start">
           <Box position="relative">
             <Popover>

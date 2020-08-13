@@ -57,7 +57,7 @@ export default function Player() {
       <Box position="absolute" top="0" left="0" right="0" height="100px" zIndex="1000">
         <ConnectionBar player={playerRef} state={state} dispatch={dispatch} />
       </Box>
-      <Flex flex={1} width="100%" alignItems="stretch">
+      <Flex flex={1} width="100%" alignItems="stretch" position="relative">
         <StyledPlayer
           {...state}
           ref={playerRef}
@@ -74,6 +74,7 @@ export default function Player() {
           width="100%"
           height="auto"
         ></StyledPlayer>
+        {!state.url && <Box position="absolute" top="0" left="0" right="0" bottom="0" backgroundImage="url(https://image.freepik.com/free-photo/futuristic-blue-glowing-neon-round-portal-sci-fi-background_118195-79.jpg)" backgroundRepeat="no-repeat" backgroundPosition="center" backgroundSize="cover" />}
       </Flex>
       <Toolbar state={state} dispatch={dispatch} />
     </Flex>

@@ -26,7 +26,7 @@ import {
 
 const Toolbar = ({ state, dispatch }) => {
   return (
-    <Stack spacing={8} isInline alignItems="center" bg="gray.800" py={4} px={8}>
+    <Stack spacing={8} isInline alignItems="center" bg="gray.900" py={4} px={8}>
       <Box color="white" cursor="pointer">
         {!state.playing ? (
           <MdPlayArrow size={40} onClick={() => dispatch({ type: "PLAY" })} />

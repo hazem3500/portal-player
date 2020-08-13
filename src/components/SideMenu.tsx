@@ -18,9 +18,9 @@ const SideMenuButton = ({ to, icon, label, ...props }) => {
       as={StyledLink}
       transition="background 0.2s ease-out"
       py={4}
-      bg={match && match.isExact && "gray.400"}
+      bg={match && match.isExact && "gray.600"}
       _hover={{
-        bg: !(match && match.isExact) && "gray.500",
+        bg: !(match && match.isExact) && "gray.700",
       }}
       to={to}
       {...props}
@@ -33,7 +33,7 @@ const SideMenuButton = ({ to, icon, label, ...props }) => {
 
 const SideMenu = () => {
   return (
-    <Box bg="gray.600" color="gray.100">
+    <Box bg="gray.800" color="gray.100">
       <SideMenuButton to="/" icon={<MdPlayArrow size={32} />} label="Home" />
       <SideMenuButton
         to="/search"
