@@ -82,6 +82,7 @@
     "electron-squirrel-startup": "^1.0.0",
     "emotion-theming": "^10.0.27",
     "file-loader": "^4.2.0",
+    "fluent-ffmpeg": "^2.1.2",
     "peerjs": "^1.2.0",
     "polished": "^3.4.1",
     "react": "^16.11.0",

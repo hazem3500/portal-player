@@ -45,7 +45,8 @@ const Toolbar = ({ state, dispatch }) => {
         transition="flex-basis 0.5s ease-out"
         role="group"
         flexBasis="40px"
-        _hover={{ flexBasis: "300px" }}
+        flexShrink={0}
+        _hover={{ flexBasis: "150px" }}
       >
         <Flex alignItems="center">
           <Box
@@ -89,7 +90,8 @@ const Toolbar = ({ state, dispatch }) => {
         transition="flex-basis 0.5s ease-out"
         role="group"
         flexBasis="40px"
-        _hover={{ flexBasis: "300px" }}
+        flexShrink={0}
+        _hover={{ flexBasis: "150px" }}
       >
         <Flex alignItems="center">
           <PseudoBox
