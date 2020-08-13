@@ -102,7 +102,7 @@ const ConnectionBar = ({ state, dispatch, player }) => {
         px={8}
         position="relative"
       >
-         <Tooltip label="transcribe" placement="bottom-start">
+         <Tooltip label="Transcribe" placement="bottom-start">
           <Box>
             <Box
               cursor="pointer"
@@ -110,7 +110,7 @@ const ConnectionBar = ({ state, dispatch, player }) => {
               size="40px"
               as={MdTransform}
               onClick={() => toast({
-                title: "transcribing video",
+                title: "Transcribing video",
                 description: "Please wait a while the video is being transcribed",
                 status: "success",
                 duration: 9000,
@@ -119,7 +119,7 @@ const ConnectionBar = ({ state, dispatch, player }) => {
             ></Box>
           </Box>
         </Tooltip>
-         <Tooltip label="translate" placement="bottom-start">
+         <Tooltip label="Translate" placement="bottom-start">
           <Box>
             <Box
               cursor="pointer"
@@ -188,7 +188,7 @@ const ConnectionBar = ({ state, dispatch, player }) => {
             </Popover>
           </Box>
         </Tooltip>
-        <Tooltip label="start session" placement="bottom-start">
+        <Tooltip label="Start session" placement="bottom-start">
           <Box>
             <Box
               cursor="pointer"
@@ -199,7 +199,7 @@ const ConnectionBar = ({ state, dispatch, player }) => {
             ></Box>
           </Box>
         </Tooltip>
-        <Tooltip closeOnClick label="join session" placement="bottom-start">
+        <Tooltip closeOnClick label="Join session" placement="bottom-start">
           <Box position="relative">
             <Popover>
               {({ onClose }) => (
